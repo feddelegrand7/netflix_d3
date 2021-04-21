@@ -1,0 +1,39 @@
+---
+title: "Netflix Content Release"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Data Prep
+
+
+```{r echo=TRUE, message=FALSE, warning=FALSE, cache=TRUE}
+library(tidyverse)
+library(lubridate)
+
+netflix_titles <- vroom::vroom('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2021/2021-04-20/netflix_titles.csv')
+
+netflix_titles$date_added2 <- mdy(netflix_titles$date_added)
+
+data <- netflix_titles %>% count(date_added2)
+
+data <- data %>% filter(date_added2 > "2015-12-31")
+
+```
+
+# D3 Viz
+
+
+```{r,fig.align='center'}
+library(r2d3)
+
+r2d3(
+  data = data, 
+  script = "line_chart.js", 
+  width = 800
+)
+```
+
